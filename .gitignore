@@ -1,0 +1,36 @@
+# Entornos y archivos generados por Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Datos locales y artefactos pesados
+Data filtrada/
+Data hecha anteriormente por psinet/
+data/*
+input/*
+models/*
+outputs/*
+
+# Mantener la estructura de carpetas en clones nuevos
+!data/.gitkeep
+!input/.gitkeep
+!models/.gitkeep
+!outputs/.gitkeep
+
+# Pesos y exportaciones de modelos
+*.pt
+*.pth
+*.onnx
+*.engine
+
+# Registros temporales
+*.log
+

@@ -1,0 +1,9 @@
+ultralytics
+opencv-python
+numpy
+pandas
+tqdm
+pyyaml
+torch
+torchvision
+kornia
