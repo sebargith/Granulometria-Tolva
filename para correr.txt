@@ -1,0 +1,68 @@
+COMO CORRER INFERENCIA YOLO PARA DETECTAR MATERIAL EN TOLVA
+===========================================================
+
+1. Abrir PowerShell y entrar al proyecto
+
+cd "D:\Memoria\Granulometria"
+
+
+2. Activar el entorno
+
+conda activate memoria-dexined
+
+
+3. Verificar el modelo
+
+models\haul_truck_segment_m_736_low_data_aug_07012025.pt
+
+
+4. Preparar imagenes de entrada
+
+Poner frames originales del camion en una carpeta como:
+
+input\Data test 1
+input\Data test 2
+
+Formatos soportados: JPG, JPEG, PNG, BMP, TIFF y WEBP.
+
+
+5. Ejecutar inferencia filtrando solo material
+
+python predict_tolva.py `
+  --model "models\haul_truck_segment_m_736_low_data_aug_07012025.pt" `
+  --source "input\Data test 2" `
+  --imgsz 736 `
+  --conf 0.25 `
+  --class-ids 1
+
+
+6. Revisar resultados
+
+Para el input "Data test 2", la salida se crea en:
+
+outputs\yolo_tolva\data_test_2
+
+Contenido:
+
+masks\          mascaras binarias de material
+overlays\       imagen original con mascara superpuesta
+predictions.csv resumen de detecciones por imagen
+params.json     parametros de la corrida
+
+Si la carpeta ya existe, el script agrega fecha y hora para no sobrescribirla.
+
+
+7. Ajustes utiles
+
+Si detecta poco:
+--conf 0.15
+
+Si detecta ruido:
+--conf 0.40
+
+Para procesar solo algunas imagenes:
+--max-images 20
+
+Para incluir la vista nativa de Ultralytics:
+--save-model-preview
+
