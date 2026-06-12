@@ -9,14 +9,17 @@ carga, mapas de bordes, contornos y analisis local.
 
 ## Estado actual
 
-Actualmente estan implementados tres componentes:
+Actualmente estan implementados cuatro componentes:
 
 1. Inferencia YOLO-seg para detectar la region visible de `Carga`.
 2. Inferencia DexiNed para generar mapas de bordes sobre imagenes o recortes.
 3. Generacion trazable y etiquetado manual de patches.
+4. Entrenamiento e inferencia de un baseline Random Forest para patches.
 
-Todavia falta conectar automaticamente las mascaras YOLO con los patches,
-extraer features y entrenar el clasificador fina/media/gruesa.
+La segmentacion YOLO y la generacion de patches ya estan conectadas. El
+baseline permite medir si las etiquetas contienen una senal aprendible, pero
+todavia se necesita ampliar y balancear el dataset antes de usarlo como modelo
+operacional.
 
 ## Estructura
 
@@ -27,6 +30,12 @@ extraer features y entrenar el clasificador fina/media/gruesa.
 |   `-- carga_tolva_yolo/
 |       |-- predict_carga.py
 |       |-- preparar_patches.py
+|       `-- README.md
+|-- modelos granulometria/
+|   `-- clasificador_patches/
+|       |-- features.py
+|       |-- train_random_forest.py
+|       |-- predict_patches.py
 |       `-- README.md
 |-- scripts/
 |   `-- run_dexined_edges.py
@@ -229,6 +238,33 @@ invalido: fondo, tolva, desenfoque, polvo o iluminacion inutilizable
 ambiguo:  no es posible decidir con suficiente confianza
 ```
 
+## Entrenamiento del clasificador
+
+El baseline usa caracteristicas de bordes y textura calculadas con OpenCV y un
+Random Forest. Solo toma etiquetas `fino`, `medio` y `grueso`; los patches
+`mixto`, `invalido` y `ambiguo` quedan fuera del entrenamiento inicial.
+
+```powershell
+python "modelos granulometria\clasificador_patches\train_random_forest.py" `
+  --dataset "outputs\patches\data_parches_test_carga_128"
+```
+
+El split se hace por frame original, no por patch. Cada corrida queda
+versionada localmente en:
+
+```text
+modelos granulometria/clasificador_patches/runs/vNNN_random_forest/
+```
+
+La prueba v002 uso 181 patches utiles de 33 frames. Obtuvo F1 macro 0.402 en
+validacion y 0.318 en test. Es una prueba funcional, no un resultado final: la
+clase `grueso` tiene solo 24 ejemplos totales y ninguno de los cuatro ejemplos
+`grueso` del test fue reconocido. Se requiere recolectar mas frames y balancear
+las tres clases.
+
+Para reentrenar conservando los mismos frames de validacion y test, usar el
+`group_split.csv` de una corrida anterior mediante `--reuse-split`.
+
 Opciones relevantes para recortes con fondo negro o elementos ajenos a la
 carga:
 
@@ -271,11 +307,11 @@ frame original
 
 Las tareas tecnicas siguientes son:
 
-1. Integrar automaticamente las mascaras YOLO con DexiNed.
-2. Generar el dataset definitivo de patches dentro de la mascara de material.
-3. Etiquetar patches de alta confianza y revisar el balance por clase.
-4. Extraer features de bordes, areas, perimetros y fragmentacion.
-5. Entrenar y evaluar Random Forest/SVM como baseline.
+1. Generar patches de mas frames y secuencias independientes.
+2. Alcanzar al menos 300-500 ejemplos claros por clase y balancear `grueso`.
+3. Mantener fijo el conjunto test mediante `--reuse-split`.
+4. Comparar el baseline OpenCV con features calculadas desde DexiNed.
+5. Comparar Random Forest con SVM y una CNN liviana sobre edge maps.
 6. Agregar resultados temporalmente por secuencia o camion.
 7. Incorporar el modelo de oversized rocks como indicador complementario.
 

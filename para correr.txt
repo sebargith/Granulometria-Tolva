@@ -128,3 +128,42 @@ streamlit run tools\patch_labeler\app.py -- `
 
 La interfaz se abre en http://localhost:8501 y guarda cada decision en
 labels.csv dentro de la carpeta seleccionada.
+
+
+============================================================
+ENTRENAR CLASIFICADOR DE PATCHES
+============================================================
+
+Entrenar el baseline Random Forest con el dataset etiquetado:
+
+python "modelos granulometria\clasificador_patches\train_random_forest.py" `
+  --dataset "outputs\patches\data_parches_test_carga_128"
+
+El entrenamiento usa solamente fino, medio y grueso. Separa los datos por
+frame original para que patches del mismo frame no queden repartidos entre
+train, validacion y test.
+
+Resultados:
+
+modelos granulometria\clasificador_patches\runs\vNNN_random_forest
+
+Archivos principales:
+
+model.joblib             modelo entrenado
+metrics.json             metricas de validacion y test
+confusion_matrix.png     matriz de confusion
+predictions_test.csv     predicciones del test
+feature_importance.csv   importancia de caracteristicas
+group_split.csv          division fija por frame
+
+Reentrenar agregando otro dataset y conservando el test anterior:
+
+python "modelos granulometria\clasificador_patches\train_random_forest.py" `
+  --dataset "outputs\patches\data_parches_test_carga_128" "ruta\dataset_nuevo" `
+  --reuse-split "modelos granulometria\clasificador_patches\runs\v002_random_forest\group_split.csv"
+
+Inferir un dataset de patches:
+
+python "modelos granulometria\clasificador_patches\predict_patches.py" `
+  --model "modelos granulometria\clasificador_patches\runs\v002_random_forest\model.joblib" `
+  --dataset "outputs\patches\data_parches_test_carga_128"

@@ -9,3 +9,6 @@ torchvision
 kornia
 streamlit
 dill
+scikit-learn
+joblib
+matplotlib

@@ -20,18 +20,21 @@ data/*
 input/*
 models/*
 outputs/*
+modelos granulometria/**/runs/*
 
 # Mantener la estructura de carpetas en clones nuevos
 !data/.gitkeep
 !input/.gitkeep
 !models/.gitkeep
 !outputs/.gitkeep
+!modelos granulometria/**/runs/.gitkeep
 
 # Pesos y exportaciones de modelos
 *.pt
 *.pth
 *.onnx
 *.engine
+*.joblib
 
 # Registros temporales
 *.log
