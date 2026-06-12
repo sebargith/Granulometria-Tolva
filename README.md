@@ -25,8 +25,8 @@ extraer features y entrenar el clasificador fina/media/gruesa.
 |-- predict_tolva.py
 |-- modelos percepcion/
 |   `-- carga_tolva_yolo/
-|       |-- best.pt              # peso local, ignorado por Git
 |       |-- predict_carga.py
+|       |-- preparar_patches.py
 |       `-- README.md
 |-- scripts/
 |   `-- run_dexined_edges.py
@@ -72,10 +72,11 @@ modelos percepcion/carga_tolva_yolo/
 Metadata verificada:
 
 ```text
-modelo: best.pt
+modelo: models/haul_truck_segment_m_736_low_data_aug_07012025.pt
 task: segment
-imgsz: 640
-class 0: Carga
+imgsz: 736
+class 0: caex
+class 1: material
 ```
 
 Las imagenes originales se organizan por experimento:
@@ -140,12 +141,29 @@ outputs/dexined_edges/<run-name>/
 
 ## Generacion de patches
 
-Para generar ventanas `256x256` con 50% de solapamiento desde recortes de
-carga:
+La opcion recomendada segmenta primero la clase `material` y genera ventanas
+`256x256` con 50% de solapamiento y al menos 80% de carga:
+
+```powershell
+python "modelos percepcion\carga_tolva_yolo\preparar_patches.py" `
+  --source "Data parches test" `
+  --run-name data_parches_test_carga `
+  --open-labeler
+```
+
+Esto produce:
+
+```text
+outputs/yolo_carga/data_parches_test_carga/   mascaras y overlays
+outputs/patches/data_parches_test_carga/      imagenes, patches.csv y labels.csv
+```
+
+Si las mascaras ya existen, tambien se puede ejecutar solamente el generador:
 
 ```powershell
 python tools\patch_labeler\generate_patches.py `
-  --source "D:\ruta\a\recortes_de_carga" `
+  --source "Data parches test" `
+  --mask-dir "outputs\yolo_carga\experimento\masks" `
   --run-name prueba_patches `
   --patch-size 256 `
   --stride 128 `
@@ -179,8 +197,8 @@ La forma mas simple de abrirla es hacer doble clic en:
 Etiquetar parches.lnk
 ```
 
-El acceso directo carga por defecto `Data parches test`, abre el navegador y
-usa el entorno Conda `memoria-dexined`.
+El acceso directo carga el dataset generado mas reciente de `outputs/patches`,
+abre el navegador y usa el entorno Conda `memoria-dexined`.
 
 Desde PowerShell se puede ejecutar con:
 
@@ -228,12 +246,14 @@ Actualmente se dispone localmente de:
 
 ```text
 modelos percepcion/carga_tolva_yolo/best.pt
-haul_truck_segment_m_736_low_data_aug_07012025.pt
-oversized_rocks_segment_20241205-004357.pt
+models/haul_truck_segment_m_736_low_data_aug_07012025.pt
+models/oversized_rocks_segment_20241205-004357.pt
 ```
 
-`best.pt` es el modelo principal para obtener la mascara de `Carga`. Los pesos
-de `models/` se conservan como modelos anteriores o complementarios.
+`haul_truck...pt`, usando la clase `material`, es el modelo principal para
+obtener la mascara de carga. `oversized_rocks...pt` se reserva para detectar
+rocas oversized y debe restringirse posteriormente a la mascara de carga para
+reducir falsos positivos. `best.pt` se conserva como alternativa.
 
 Los archivos de pesos no se suben al repositorio por su tamano.
 

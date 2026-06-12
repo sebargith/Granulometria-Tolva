@@ -11,8 +11,9 @@ En la raiz del proyecto, abrir:
 Etiquetar parches.lnk
 ```
 
-Por defecto carga `Data parches test`. La ventana de PowerShell/CMD debe
-permanecer abierta mientras se utiliza la interfaz.
+Por defecto carga el dataset generado mas reciente dentro de `outputs/patches`.
+Si no existe ninguno, carga `Data parches test`. La ventana de PowerShell/CMD
+debe permanecer abierta mientras se utiliza la interfaz.
 
 Tambien se puede arrastrar otra carpeta de imagenes sobre
 `abrir_etiquetador.cmd`.

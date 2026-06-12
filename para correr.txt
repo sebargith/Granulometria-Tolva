@@ -13,12 +13,13 @@ conda activate memoria-dexined
 
 3. Verificar el modelo
 
-modelos percepcion\carga_tolva_yolo\best.pt
+models\haul_truck_segment_m_736_low_data_aug_07012025.pt
 
 Metadata:
 task = segment
-imgsz = 640
-class 0 = Carga
+imgsz = 736
+class 0 = caex
+class 1 = material
 
 
 4. Preparar imagenes de entrada
@@ -73,8 +74,24 @@ Para incluir la vista nativa de Ultralytics:
 GENERAR PATCHES PARA CLASIFICACION GRANULOMETRICA
 ============================================================
 
+Opcion recomendada, desde frames originales:
+
+python "modelos percepcion\carga_tolva_yolo\preparar_patches.py" `
+  --source "Data parches test" `
+  --run-name data_parches_test_carga `
+  --open-labeler
+
+Este comando:
+1. Segmenta material con haul_truck...pt.
+2. Guarda mascaras en outputs\yolo_carga.
+3. Genera patches 256x256 con stride 128 y cobertura minima 80%.
+4. Abre Streamlit usando los patches generados.
+
+Si las mascaras ya existen, ejecutar manualmente:
+
 python tools\patch_labeler\generate_patches.py `
-  --source "D:\ruta\a\recortes_de_carga" `
+  --source "Data parches test" `
+  --mask-dir "outputs\yolo_carga\experimento\masks" `
   --run-name prueba_patches `
   --patch-size 256 `
   --stride 128 `
@@ -91,10 +108,13 @@ outputs\patches\prueba_patches\patches.csv
 ETIQUETAR PATCHES
 ============================================================
 
-Opcion recomendada:
+Para el experimento generado en esta prueba:
 
-Hacer doble clic en "Etiquetar parches.lnk" en la carpeta principal del
-proyecto. Abre automaticamente "Data parches test".
+python tools\patch_labeler\launcher.py `
+  "outputs\patches\data_parches_test_pipeline"
+
+Tambien se puede hacer doble clic en "Etiquetar parches.lnk". El acceso
+directo abre automaticamente el dataset generado mas reciente.
 
 Desde PowerShell, para seleccionar otro dataset:
 

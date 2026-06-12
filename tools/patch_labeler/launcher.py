@@ -13,7 +13,19 @@ from pathlib import Path
 TOOL_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = TOOL_DIR.parents[1]
 APP_PATH = TOOL_DIR / "app.py"
-DEFAULT_DATASET = PROJECT_ROOT / "Data parches test"
+FALLBACK_DATASET = PROJECT_ROOT / "Data parches test"
+
+
+def latest_generated_dataset() -> Path:
+    patches_root = PROJECT_ROOT / "outputs" / "patches"
+    candidates = [
+        path
+        for path in patches_root.glob("*")
+        if path.is_dir() and (path / "patches.csv").is_file()
+    ]
+    if not candidates:
+        return FALLBACK_DATASET
+    return max(candidates, key=lambda path: (path / "patches.csv").stat().st_mtime)
 
 
 def available_port(start: int = 8501, attempts: int = 20) -> int:
@@ -40,7 +52,11 @@ def open_when_ready(url: str) -> None:
 
 
 def main() -> int:
-    dataset = Path(sys.argv[1]).expanduser().resolve() if len(sys.argv) > 1 else DEFAULT_DATASET
+    dataset = (
+        Path(sys.argv[1]).expanduser().resolve()
+        if len(sys.argv) > 1
+        else latest_generated_dataset()
+    )
     if not dataset.exists():
         print(f"No existe el dataset inicial: {dataset}")
         print("Puedes arrastrar una carpeta sobre abrir_etiquetador.cmd para usar otra ubicacion.")
