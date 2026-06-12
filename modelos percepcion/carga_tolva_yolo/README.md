@@ -65,8 +65,8 @@ para generar patches internos a la region de material.
 
 ## Preparar patches para Streamlit
 
-El comando integrado ejecuta la segmentacion y genera patches `256x256` con
-50% de solapamiento y al menos 80% de carga:
+El comando integrado ejecuta la segmentacion y genera patches `128x128`, sin
+solapamiento y con al menos 80% de carga:
 
 ```powershell
 python "modelos percepcion\carga_tolva_yolo\preparar_patches.py" `

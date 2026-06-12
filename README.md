@@ -142,7 +142,7 @@ outputs/dexined_edges/<run-name>/
 ## Generacion de patches
 
 La opcion recomendada segmenta primero la clase `material` y genera ventanas
-`256x256` con 50% de solapamiento y al menos 80% de carga:
+`128x128`, sin solapamiento y con al menos 80% de carga:
 
 ```powershell
 python "modelos percepcion\carga_tolva_yolo\preparar_patches.py" `
@@ -165,7 +165,7 @@ python tools\patch_labeler\generate_patches.py `
   --source "Data parches test" `
   --mask-dir "outputs\yolo_carga\experimento\masks" `
   --run-name prueba_patches `
-  --patch-size 256 `
+  --patch-size 128 `
   --stride 128 `
   --min-valid-fraction 0.8
 ```

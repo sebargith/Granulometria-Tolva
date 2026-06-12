@@ -37,7 +37,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--imgsz", type=int, default=736)
-    parser.add_argument("--patch-size", type=int, default=256)
+    parser.add_argument("--patch-size", type=int, default=128)
     parser.add_argument("--stride", type=int, default=128)
     parser.add_argument("--min-valid-fraction", type=float, default=0.8)
     parser.add_argument("--recursive", action="store_true")

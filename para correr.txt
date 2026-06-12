@@ -84,7 +84,7 @@ python "modelos percepcion\carga_tolva_yolo\preparar_patches.py" `
 Este comando:
 1. Segmenta material con haul_truck...pt.
 2. Guarda mascaras en outputs\yolo_carga.
-3. Genera patches 256x256 con stride 128 y cobertura minima 80%.
+3. Genera patches 128x128 con stride 128 y cobertura minima 80%.
 4. Abre Streamlit usando los patches generados.
 
 Si las mascaras ya existen, ejecutar manualmente:
@@ -93,7 +93,7 @@ python tools\patch_labeler\generate_patches.py `
   --source "Data parches test" `
   --mask-dir "outputs\yolo_carga\experimento\masks" `
   --run-name prueba_patches `
-  --patch-size 256 `
+  --patch-size 128 `
   --stride 128 `
   --min-valid-fraction 0.8
 
