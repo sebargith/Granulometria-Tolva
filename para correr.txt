@@ -66,3 +66,36 @@ Para procesar solo algunas imagenes:
 Para incluir la vista nativa de Ultralytics:
 --save-model-preview
 
+
+============================================================
+GENERAR PATCHES PARA CLASIFICACION GRANULOMETRICA
+============================================================
+
+python scripts\generate_patches.py `
+  --source "D:\ruta\a\recortes_de_carga" `
+  --run-name prueba_patches `
+  --patch-size 256 `
+  --stride 128 `
+  --min-valid-fraction 0.8
+
+Si los recortes tienen fondo negro, agregar al comando:
+  --mask-black-background --foreground-threshold 8
+
+Salida:
+outputs\patches\prueba_patches\patches.csv
+
+
+============================================================
+ETIQUETAR PATCHES
+============================================================
+
+streamlit run scripts\label_patches.py -- `
+  --dataset "outputs\patches\prueba_patches"
+
+Para etiquetar directamente las imagenes de una carpeta:
+
+streamlit run scripts\label_patches.py -- `
+  --dataset "Data parches test"
+
+La interfaz se abre en http://localhost:8501 y guarda cada decision en
+labels.csv dentro de la carpeta seleccionada.

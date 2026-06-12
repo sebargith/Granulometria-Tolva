@@ -14,6 +14,8 @@ Thumbs.db
 # Datos locales y artefactos pesados
 Data filtrada/
 Data hecha anteriormente por psinet/
+Data evidencias CAEX/
+Data parches test/
 data/*
 input/*
 models/*
@@ -33,4 +35,3 @@ outputs/*
 
 # Registros temporales
 *.log
-
