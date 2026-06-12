@@ -71,7 +71,7 @@ Para incluir la vista nativa de Ultralytics:
 GENERAR PATCHES PARA CLASIFICACION GRANULOMETRICA
 ============================================================
 
-python scripts\generate_patches.py `
+python tools\patch_labeler\generate_patches.py `
   --source "D:\ruta\a\recortes_de_carga" `
   --run-name prueba_patches `
   --patch-size 256 `
@@ -89,12 +89,19 @@ outputs\patches\prueba_patches\patches.csv
 ETIQUETAR PATCHES
 ============================================================
 
-streamlit run scripts\label_patches.py -- `
-  --dataset "outputs\patches\prueba_patches"
+Opcion recomendada:
 
-Para etiquetar directamente las imagenes de una carpeta:
+Hacer doble clic en "Etiquetar parches.lnk" en la carpeta principal del
+proyecto. Abre automaticamente "Data parches test".
 
-streamlit run scripts\label_patches.py -- `
+Desde PowerShell, para seleccionar otro dataset:
+
+python tools\patch_labeler\launcher.py `
+  "outputs\patches\prueba_patches"
+
+Ejecucion directa con Streamlit:
+
+streamlit run tools\patch_labeler\app.py -- `
   --dataset "Data parches test"
 
 La interfaz se abre en http://localhost:8501 y guarda cada decision en

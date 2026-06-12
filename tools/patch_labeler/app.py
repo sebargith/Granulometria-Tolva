@@ -22,11 +22,14 @@ LABEL_TITLES = {
     "invalido": "Invalido",
     "ambiguo": "Ambiguo",
 }
+TOOL_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = TOOL_DIR.parents[1]
+ICON_PATH = TOOL_DIR / "assets" / "patch_labeler.ico"
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("--dataset", default="Data parches test")
+    parser.add_argument("--dataset", default=str(PROJECT_ROOT / "Data parches test"))
     parser.add_argument("--labels-file")
     args, _ = parser.parse_known_args()
     return args
@@ -35,7 +38,7 @@ def parse_args() -> argparse.Namespace:
 def resolve_dataset(value: str) -> Path:
     path = Path(value).expanduser()
     if not path.is_absolute():
-        path = Path.cwd() / path
+        path = PROJECT_ROOT / path
     return path.resolve()
 
 
@@ -168,7 +171,12 @@ def label_counts(labels: pd.DataFrame) -> dict[str, int]:
 args = parse_args()
 dataset_path = resolve_dataset(args.dataset)
 
-st.set_page_config(page_title="Etiquetado granulometrico", page_icon=None, layout="wide")
+if ICON_PATH.is_file():
+    with Image.open(ICON_PATH) as icon_image:
+        page_icon = icon_image.copy()
+else:
+    page_icon = None
+st.set_page_config(page_title="Etiquetado granulometrico", page_icon=page_icon, layout="wide")
 st.markdown(
     """
     <style>

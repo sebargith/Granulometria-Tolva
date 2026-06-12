@@ -24,12 +24,18 @@ extraer features y entrenar el clasificador fina/media/gruesa.
 .
 |-- predict_tolva.py
 |-- scripts/
-|   |-- generate_patches.py
-|   |-- label_patches.py
 |   `-- run_dexined_edges.py
+|-- tools/
+|   `-- patch_labeler/
+|       |-- app.py
+|       |-- generate_patches.py
+|       |-- patches.py
+|       |-- launcher.py
+|       |-- abrir_etiquetador.cmd
+|       `-- assets/patch_labeler.ico
 |-- src/granulometria/
-|   |-- dexined.py
-|   `-- patches.py
+|   `-- dexined.py
+|-- Etiquetar parches.lnk
 |-- models/                 # pesos locales, ignorados por Git
 |-- input/                  # imagenes de prueba, ignoradas por Git
 |-- outputs/                # resultados, ignorados por Git
@@ -120,7 +126,7 @@ Para generar ventanas `256x256` con 50% de solapamiento desde recortes de
 carga:
 
 ```powershell
-python scripts\generate_patches.py `
+python tools\patch_labeler\generate_patches.py `
   --source "D:\ruta\a\recortes_de_carga" `
   --run-name prueba_patches `
   --patch-size 256 `
@@ -149,15 +155,26 @@ outputs/patches/prueba_patches/
 La aplicacion local permite asignar `fino`, `medio`, `grueso`, `mixto`,
 `invalido` o `ambiguo`, junto con confianza y notas:
 
-```powershell
-streamlit run scripts\label_patches.py -- `
-  --dataset "outputs\patches\prueba_patches"
+La forma mas simple de abrirla es hacer doble clic en:
+
+```text
+Etiquetar parches.lnk
 ```
 
-Tambien acepta directamente una carpeta de imagenes:
+El acceso directo carga por defecto `Data parches test`, abre el navegador y
+usa el entorno Conda `memoria-dexined`.
+
+Desde PowerShell se puede ejecutar con:
 
 ```powershell
-streamlit run scripts\label_patches.py -- `
+python tools\patch_labeler\launcher.py `
+  "outputs\patches\prueba_patches"
+```
+
+Tambien se puede ejecutar Streamlit directamente:
+
+```powershell
+streamlit run tools\patch_labeler\app.py -- `
   --dataset "Data parches test"
 ```
 

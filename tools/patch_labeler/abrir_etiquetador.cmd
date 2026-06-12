@@ -1,0 +1,27 @@
+@echo off
+setlocal
+title Etiquetador de granulometria
+
+set "TOOL_DIR=%~dp0"
+set "ENV_PYTHON=C:\Users\azusu\anaconda3\envs\memoria-dexined\python.exe"
+
+if exist "%ENV_PYTHON%" goto run
+
+where conda >nul 2>nul
+if errorlevel 1 goto missing
+
+conda run -n memoria-dexined python "%TOOL_DIR%launcher.py" %*
+goto end
+
+:run
+"%ENV_PYTHON%" "%TOOL_DIR%launcher.py" %*
+goto end
+
+:missing
+echo No se encontro el entorno memoria-dexined.
+echo Ejecuta primero: conda activate memoria-dexined
+echo Luego instala las dependencias con: python -m pip install -r requirements.txt
+pause
+
+:end
+endlocal
