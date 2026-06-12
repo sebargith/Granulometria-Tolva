@@ -176,15 +176,53 @@ if ICON_PATH.is_file():
         page_icon = icon_image.copy()
 else:
     page_icon = None
-st.set_page_config(page_title="Etiquetado granulometrico", page_icon=page_icon, layout="wide")
+st.set_page_config(
+    page_title="Etiquetado granulometrico",
+    page_icon=page_icon,
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 st.markdown(
     """
     <style>
+    :root { color-scheme: light; }
     .stApp { background: #f5f7f8; color: #182126; }
     [data-testid="stHeader"] { background: rgba(245, 247, 248, 0.94); }
+    [data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #dce3e6; }
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] span,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stRadio"] p { color: #182126 !important; }
     [data-testid="stMetric"] { background: #ffffff; border: 1px solid #dce3e6; padding: 12px; border-radius: 6px; }
     [data-testid="stMetricLabel"], [data-testid="stMetricValue"] { color: #182126; }
-    .stButton button { min-height: 44px; border-radius: 6px; font-weight: 650; }
+    .stButton > button {
+        min-height: 44px;
+        border-radius: 6px;
+        border: 1px solid #182126;
+        background: #182126;
+        color: #ffffff !important;
+        font-weight: 650;
+    }
+    .stButton > button p { color: #ffffff !important; }
+    .stButton > button:hover {
+        border-color: #007f78;
+        background: #007f78;
+        color: #ffffff !important;
+    }
+    .stButton > button:disabled {
+        border-color: #c8d2d6;
+        background: #e5eaec;
+        color: #68777e !important;
+    }
+    .stButton > button:disabled p { color: #68777e !important; }
+    [data-testid="stTextInput"] input {
+        border: 1px solid #aab8be;
+        background: #ffffff !important;
+        color: #182126 !important;
+    }
+    [data-testid="stTextInput"] input::placeholder { color: #68777e !important; opacity: 1; }
     [data-testid="stImage"] img { border: 1px solid #cfd8dc; border-radius: 4px; max-height: 330px; object-fit: contain; }
     </style>
     """,
