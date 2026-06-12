@@ -13,7 +13,12 @@ conda activate memoria-dexined
 
 3. Verificar el modelo
 
-models\haul_truck_segment_m_736_low_data_aug_07012025.pt
+modelos percepcion\carga_tolva_yolo\best.pt
+
+Metadata:
+task = segment
+imgsz = 640
+class 0 = Carga
 
 
 4. Preparar imagenes de entrada
@@ -29,18 +34,15 @@ Formatos soportados: JPG, JPEG, PNG, BMP, TIFF y WEBP.
 5. Ejecutar inferencia filtrando solo material
 
 python predict_tolva.py `
-  --model "models\haul_truck_segment_m_736_low_data_aug_07012025.pt" `
   --source "input\Data test 2" `
-  --imgsz 736 `
-  --conf 0.25 `
-  --class-ids 1
+  --conf 0.25
 
 
 6. Revisar resultados
 
 Para el input "Data test 2", la salida se crea en:
 
-outputs\yolo_tolva\data_test_2
+outputs\yolo_carga\data_test_2
 
 Contenido:
 

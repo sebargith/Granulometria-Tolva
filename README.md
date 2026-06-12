@@ -11,7 +11,7 @@ carga, mapas de bordes, contornos y analisis local.
 
 Actualmente estan implementados tres componentes:
 
-1. Inferencia YOLO-seg para detectar el camion y la region `material`.
+1. Inferencia YOLO-seg para detectar la region visible de `Carga`.
 2. Inferencia DexiNed para generar mapas de bordes sobre imagenes o recortes.
 3. Generacion trazable y etiquetado manual de patches.
 
@@ -23,6 +23,11 @@ extraer features y entrenar el clasificador fina/media/gruesa.
 ```text
 .
 |-- predict_tolva.py
+|-- modelos percepcion/
+|   `-- carga_tolva_yolo/
+|       |-- best.pt              # peso local, ignorado por Git
+|       |-- predict_carga.py
+|       `-- README.md
 |-- scripts/
 |   `-- run_dexined_edges.py
 |-- tools/
@@ -58,10 +63,19 @@ python -m pip install -r requirements.txt
 
 ## Inferencia YOLO de material en tolva
 
-El modelo esperado es:
+El modelo de percepcion principal esta encapsulado en:
 
 ```text
-models/haul_truck_segment_m_736_low_data_aug_07012025.pt
+modelos percepcion/carga_tolva_yolo/
+```
+
+Metadata verificada:
+
+```text
+modelo: best.pt
+task: segment
+imgsz: 640
+class 0: Carga
 ```
 
 Las imagenes originales se organizan por experimento:
@@ -71,22 +85,26 @@ input/Data test 1/
 input/Data test 2/
 ```
 
-Ejemplo recomendado, filtrando solo la clase `material` (`class-id 1`):
+Ejemplo recomendado:
 
 ```powershell
 python predict_tolva.py `
-  --model "models\haul_truck_segment_m_736_low_data_aug_07012025.pt" `
   --source "input\Data test 2" `
-  --imgsz 736 `
-  --conf 0.25 `
-  --class-ids 1
+  --conf 0.25
+```
+
+`predict_tolva.py` conserva compatibilidad con los comandos anteriores y
+ejecuta internamente:
+
+```text
+modelos percepcion/carga_tolva_yolo/predict_carga.py
 ```
 
 Si se omite `--run-name`, la carpeta de salida toma el nombre del input. Si ya
 existe, se agrega fecha y hora para no sobrescribir resultados.
 
 ```text
-outputs/yolo_tolva/data_test_2/
+outputs/yolo_carga/data_test_2/
 |-- masks/
 |-- overlays/
 |-- previews/
@@ -209,12 +227,15 @@ carga:
 Actualmente se dispone localmente de:
 
 ```text
+modelos percepcion/carga_tolva_yolo/best.pt
 haul_truck_segment_m_736_low_data_aug_07012025.pt
 oversized_rocks_segment_20241205-004357.pt
 ```
 
-Los archivos de pesos no se suben al repositorio por su tamano. Deben copiarse
-manualmente dentro de `models/` al preparar un entorno nuevo.
+`best.pt` es el modelo principal para obtener la mascara de `Carga`. Los pesos
+de `models/` se conservan como modelos anteriores o complementarios.
+
+Los archivos de pesos no se suben al repositorio por su tamano.
 
 ## Proximas etapas
 
