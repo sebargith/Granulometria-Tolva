@@ -185,45 +185,60 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    :root { color-scheme: light; }
-    .stApp { background: #f5f7f8; color: #182126; }
-    [data-testid="stHeader"] { background: rgba(245, 247, 248, 0.94); }
-    [data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #dce3e6; }
+    :root { color-scheme: dark; }
+    .stApp { background: #11171a; color: #edf2f3; }
+    [data-testid="stHeader"] { background: rgba(17, 23, 26, 0.94); }
+    [data-testid="stSidebar"] { background: #182126; border-right: 1px solid #344249; }
     [data-testid="stSidebar"] p,
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] span,
     [data-testid="stWidgetLabel"] p,
-    [data-testid="stRadio"] p { color: #182126 !important; }
-    [data-testid="stMetric"] { background: #ffffff; border: 1px solid #dce3e6; padding: 12px; border-radius: 6px; }
-    [data-testid="stMetricLabel"], [data-testid="stMetricValue"] { color: #182126; }
+    [data-testid="stRadio"] p { color: #edf2f3 !important; }
+    [data-testid="stMetric"] {
+        background: #1c272c;
+        border: 1px solid #344249;
+        padding: 12px;
+        border-radius: 6px;
+    }
+    [data-testid="stMetricLabel"], [data-testid="stMetricValue"] { color: #edf2f3; }
     .stButton > button {
         min-height: 44px;
         border-radius: 6px;
-        border: 1px solid #182126;
-        background: #182126;
+        border: 1px solid #506169;
+        background: #243137;
         color: #ffffff !important;
         font-weight: 650;
     }
     .stButton > button p { color: #ffffff !important; }
     .stButton > button:hover {
-        border-color: #007f78;
-        background: #007f78;
+        border-color: #21b8aa;
+        background: #087f78;
         color: #ffffff !important;
     }
     .stButton > button:disabled {
-        border-color: #c8d2d6;
-        background: #e5eaec;
-        color: #68777e !important;
+        border-color: #303c41;
+        background: #1a2226;
+        color: #6f7d83 !important;
     }
-    .stButton > button:disabled p { color: #68777e !important; }
+    .stButton > button:disabled p { color: #6f7d83 !important; }
     [data-testid="stTextInput"] input {
-        border: 1px solid #aab8be;
-        background: #ffffff !important;
-        color: #182126 !important;
+        border: 1px solid #506169;
+        background: #1c272c !important;
+        color: #edf2f3 !important;
     }
-    [data-testid="stTextInput"] input::placeholder { color: #68777e !important; opacity: 1; }
-    [data-testid="stImage"] img { border: 1px solid #cfd8dc; border-radius: 4px; max-height: 330px; object-fit: contain; }
+    [data-testid="stTextInput"] input::placeholder { color: #94a2a8 !important; opacity: 1; }
+    [data-testid="stSelectbox"] > div > div {
+        background: #1c272c;
+        border-color: #506169;
+        color: #edf2f3;
+    }
+    [data-testid="stImage"] img {
+        border: 1px solid #425158;
+        border-radius: 4px;
+        max-height: 330px;
+        object-fit: contain;
+    }
     </style>
     """,
     unsafe_allow_html=True,
