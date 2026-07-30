@@ -1,42 +1,47 @@
-# Clasificador de patches
+# Clasificadores de patches
 
-Baseline reproducible para clasificar patches como `fino`, `medio` o
-`grueso`. Usa caracteristicas de escala de grises, CLAHE, gradientes, Canny,
-contornos, componentes conectados, LBP, Gabor y DCT. No usa color como senal
-principal.
+Dataset actual:
 
-El split se realiza por `source_image`: todos los patches de un mismo frame
-quedan en un solo conjunto para evitar fuga de informacion.
+```text
+outputs/patches/grid96_batch003_data3_mixto_ai
+```
 
-## Entrenar
+Cada muestra es un patch RGB de 96 x 96 px con clase `fino`, `medio` o
+`grueso`. El split se realiza por frame para impedir fuga de informacion.
+
+## ResNet18
+
+```powershell
+python "modelos granulometria\clasificador_patches\train_resnet.py" `
+  --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
+  --run-name "resnet18_rgb_grid96_nuevo" `
+  --image-size 96 `
+  --batch-size 64 `
+  --freeze-epochs 8 `
+  --finetune-epochs 8 `
+  --device cuda
+```
+
+Modelo final actual:
+
+```text
+runs/resnet18_rgb_grid96_batch003_revisado_cuda_20260702/model.pt
+```
+
+## Random Forest
 
 ```powershell
 python "modelos granulometria\clasificador_patches\train_random_forest.py" `
-  --dataset "outputs\patches\data_parches_test_carga_128"
+  --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
+  --run-name "rf_grid96_nuevo" `
+  --n-jobs 1
 ```
 
-La salida se versiona automaticamente en `runs/v001_random_forest`,
-`runs/v002_random_forest`, etc. Cada corrida guarda el modelo, split,
-metricas, matriz de confusion, predicciones de test e importancia de features.
+Baseline final:
 
-Para reentrenar con datos nuevos manteniendo el test original:
-
-```powershell
-python "modelos granulometria\clasificador_patches\train_random_forest.py" `
-  --dataset "outputs\patches\data_parches_test_carga_128" "ruta\dataset_nuevo" `
-  --reuse-split "modelos granulometria\clasificador_patches\runs\v002_random_forest\group_split.csv"
+```text
+runs/rf_grid96_batch003_revisado_20260702/model.joblib
 ```
 
-Los frames nuevos se asignan a `train`; los frames ya conocidos conservan su
-split. Para una evaluacion mas solida sera necesario crear un test fijo con
-mas secuencias y mas ejemplos `grueso`.
-
-## Inferir
-
-```powershell
-python "modelos granulometria\clasificador_patches\predict_patches.py" `
-  --model "modelos granulometria\clasificador_patches\runs\v002_random_forest\model.joblib" `
-  --dataset "outputs\patches\data_parches_test_carga_128"
-```
-
-Genera `predictions.csv` y `summary_by_frame.csv`.
+Los runs historicos conservan metricas, matrices, parametros y splits. Sus pesos
+se retiraron del espacio activo porque pueden reproducirse desde los datasets.
