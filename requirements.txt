@@ -12,3 +12,5 @@ dill
 scikit-learn
 joblib
 matplotlib
+Pillow
+python-docx
