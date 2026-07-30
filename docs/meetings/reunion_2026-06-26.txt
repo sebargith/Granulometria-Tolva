@@ -1,0 +1,31 @@
+cambiar pipeline por metodología
+
+resumir 1),2),3) en un diagrama
+
+poner modelo yolo
+
+slide costo beneficios, cambiar pipeline offline a online
+
+ver roc para el modelo
+
+tema discusiones:
+
+a pesar de que por parche hay algunos errores, en global puede dar una buena estimación
+
+
+
+
+
+
+reunion 03/07:
+
+- Trabajos futuros: casos extremos (sombra, bordees en parches, etc....)
+- Recalcar y definir mejor los grados de granulometría
+
+
+
+reunion 10/07
+
+- poner métricas del modelo
+- usar datasets de izq/centrado/derecha y probar con el pipeline -- > mismo para granulometría
+- 
