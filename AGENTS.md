@@ -35,6 +35,12 @@ Configuracion principal:
 
 Las rutas compartidas se definen en `src/granulometria/paths.py`.
 
+El modelo YOLO es el mismo artefacto PSINet usado como percepción principal en
+Cono de Carga (`material=1`, SHA-256
+`BD7C9880D9A39B291DC03669DAD774DB9FD933D6026DF694EEE1E3A41CBF1DAB`).
+Los repositorios mantienen adaptadores y perfiles de inferencia diferentes; no
+existe todavía un servicio único de percepción.
+
 ## Datos
 
 ```text
@@ -108,7 +114,6 @@ que muchos frames casi identicos dominen el resultado temporal.
 - referencias del informe: `docs/informe_final/referencias/`;
 - comandos actuales: `docs/guides/USO_ACTUAL.md`;
 - presentaciones: `docs/presentations/`;
-- referencias: `docs/references/`;
 - batches y prompt: `docs/labeling/`.
 
 Al cambiar una ruta o configuracion, actualizar:
