@@ -3,9 +3,8 @@ setlocal
 title Etiquetador de granulometria
 
 set "TOOL_DIR=%~dp0"
-set "ENV_PYTHON=C:\Users\azusu\anaconda3\envs\memoria-dexined\python.exe"
 
-if exist "%ENV_PYTHON%" goto run
+if /I "%CONDA_DEFAULT_ENV%"=="memoria-dexined" goto active_env
 
 where conda >nul 2>nul
 if errorlevel 1 goto missing
@@ -13,8 +12,8 @@ if errorlevel 1 goto missing
 conda run -n memoria-dexined python "%TOOL_DIR%launcher.py" %*
 goto end
 
-:run
-"%ENV_PYTHON%" "%TOOL_DIR%launcher.py" %*
+:active_env
+python "%TOOL_DIR%launcher.py" %*
 goto end
 
 :missing

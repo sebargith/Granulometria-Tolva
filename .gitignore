@@ -10,22 +10,20 @@ __pycache__/
 .idea/
 .DS_Store
 Thumbs.db
+~$*
+*.inspect.ndjson
+*.lnk
 
 # Datos locales y artefactos pesados
-Data filtrada/
-Data hecha anteriormente por psinet/
-Data evidencias CAEX/
-Data parches test/
 data/*
 input/*
-models/*
 outputs/*
 modelos granulometria/**/runs/*
+*.zip
 
 # Mantener la estructura de carpetas en clones nuevos
 !data/.gitkeep
 !input/.gitkeep
-!models/.gitkeep
 !outputs/.gitkeep
 !modelos granulometria/**/runs/.gitkeep
 
@@ -38,3 +36,9 @@ modelos granulometria/**/runs/*
 
 # Registros temporales
 *.log
+tmp/
+_qa_*/
+_qa_*
+_render_*/
+_render_*
+.patch_labeler_state.json

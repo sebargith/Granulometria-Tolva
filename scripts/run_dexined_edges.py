@@ -27,12 +27,12 @@ from granulometria.dexined import (  # noqa: E402
     refine_binary_edges,
     write_image,
 )
+from granulometria.paths import LEGACY_DATA_DIR  # noqa: E402
 
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}
 DEFAULT_DATASET = (
-    Path("D:/Memoria/Granulometria/Data hecha anteriormente por psinet")
-    / "dataset_aug_rock_20241107"
+    LEGACY_DATA_DIR / "datasets_psinet" / "dataset_aug_rock_20241107"
 )
 
 

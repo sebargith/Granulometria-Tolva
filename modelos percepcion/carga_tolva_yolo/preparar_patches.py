@@ -13,7 +13,7 @@ PROJECT_ROOT = SCRIPT_DIR.parents[1]
 PREDICTOR = SCRIPT_DIR / "predict_carga.py"
 PATCH_GENERATOR = PROJECT_ROOT / "tools" / "patch_labeler" / "generate_patches.py"
 LABELER_LAUNCHER = PROJECT_ROOT / "tools" / "patch_labeler" / "launcher.py"
-DEFAULT_MODEL = PROJECT_ROOT / "models" / "haul_truck_segment_m_736_low_data_aug_07012025.pt"
+DEFAULT_MODEL = SCRIPT_DIR / "haul_truck_segment_m_736_low_data_aug_07012025.pt"
 
 
 def safe_name(value: str) -> str:
@@ -37,8 +37,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--conf", type=float, default=0.25)
     parser.add_argument("--imgsz", type=int, default=736)
-    parser.add_argument("--patch-size", type=int, default=128)
-    parser.add_argument("--stride", type=int, default=128)
+    parser.add_argument("--patch-size", type=int, default=96)
+    parser.add_argument("--stride", type=int, default=96)
     parser.add_argument("--min-valid-fraction", type=float, default=0.8)
     parser.add_argument("--recursive", action="store_true")
     parser.add_argument("--open-labeler", action="store_true")

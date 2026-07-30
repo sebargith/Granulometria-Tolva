@@ -24,7 +24,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=Path,
-        default=PROJECT_ROOT / "models" / "haul_truck_segment_m_736_low_data_aug_07012025.pt",
+        default=SCRIPT_DIR / "haul_truck_segment_m_736_low_data_aug_07012025.pt",
         help="Ruta al modelo .pt de Ultralytics.",
     )
     parser.add_argument(
@@ -278,7 +278,8 @@ def main() -> None:
 
     if not args.model.exists():
         raise FileNotFoundError(
-            f"No existe el modelo: {args.model}. Copia el peso en models/ o usa --model."
+            f"No existe el modelo: {args.model}. Copia el peso en "
+            "'modelos percepcion/carga_tolva_yolo/' o usa --model."
         )
 
     image_paths = list_images(args.source, args.recursive, args.max_images)

@@ -1,2 +1,1 @@
-"""Herramientas para el pipeline experimental de granulometria visual."""
-
+"""Componentes compartidos del pipeline de granulometria visual."""

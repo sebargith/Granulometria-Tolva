@@ -12,8 +12,15 @@ from pathlib import Path
 
 TOOL_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = TOOL_DIR.parents[1]
+SRC_DIR = PROJECT_ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from granulometria.paths import PATCH_FRAME_DATASET_DIR
+
+
 APP_PATH = TOOL_DIR / "app.py"
-FALLBACK_DATASET = PROJECT_ROOT / "Data parches test"
+FALLBACK_DATASET = PATCH_FRAME_DATASET_DIR
 
 
 def latest_generated_dataset() -> Path:
