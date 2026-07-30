@@ -1,66 +1,48 @@
-# Etiquetador de patches
+# Aplicacion Streamlit de granulometria
 
-Herramienta local autocontenida para generar y etiquetar patches de
-granulometria visual.
+La aplicacion integra tres funciones:
 
-## Abrir con doble clic
+1. etiquetado de patches;
+2. revision y correccion del dataset;
+3. pipeline completo de video.
 
-En la raiz del proyecto, abrir:
+Abrir desde la raiz:
+
+Hacer doble clic en `Abrir Webapp Granulometria de Carga.lnk`.
+
+Desde PowerShell:
+
+```powershell
+& "tools\patch_labeler\abrir_etiquetador.cmd" `
+  "outputs\patches\grid96_batch003_data3_mixto_ai"
+```
+
+El launcher usa el dataset final:
 
 ```text
-Etiquetar parches.lnk
+outputs/patches/grid96_batch003_data3_mixto_ai
 ```
 
-Por defecto carga el dataset generado mas reciente dentro de `outputs/patches`.
-Si no existe ninguno, carga `Data parches test`. La ventana de PowerShell/CMD
-debe permanecer abierta mientras se utiliza la interfaz.
-
-Tambien se puede arrastrar otra carpeta de imagenes sobre
-`abrir_etiquetador.cmd`.
-
-Si el proyecto cambia de ubicacion, el acceso directo se recrea con:
+Tambien puede abrirse otra carpeta:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\patch_labeler\crear_acceso_directo.ps1
+tools\patch_labeler\abrir_etiquetador.cmd "ruta\al\dataset"
 ```
 
-## Abrir desde PowerShell
+Si no se entrega una ruta, `launcher.py` selecciona el dataset generado mas
+reciente y usa `data/datasets/patch_frames` como ultimo fallback.
 
-```powershell
-conda activate memoria-dexined
-python tools\patch_labeler\launcher.py
-```
-
-Para usar otro dataset:
-
-```powershell
-python tools\patch_labeler\launcher.py "D:\ruta\a\patches"
-```
-
-## Generar patches
-
-```powershell
-python tools\patch_labeler\generate_patches.py `
-  --source "D:\ruta\a\recortes_de_carga" `
-  --run-name prueba_patches `
-  --patch-size 256 `
-  --stride 128 `
-  --min-valid-fraction 0.8
-```
-
-La salida se guarda en `outputs\patches\<run-name>` con `images`,
-`patches.csv` y `params.json`.
-
-## Archivos
+Modelos por defecto:
 
 ```text
-tools/patch_labeler/
-|-- app.py
-|-- generate_patches.py
-|-- patches.py
-|-- launcher.py
-|-- abrir_etiquetador.cmd
-|-- crear_acceso_directo.ps1
-|-- README.md
-`-- assets/patch_labeler.ico
+CNN: modelos granulometria/clasificador_patches/runs/
+     resnet18_rgb_grid96_batch003_revisado_cuda_20260702/model.pt
+
+RF:  modelos granulometria/clasificador_patches/runs/
+     rf_grid96_batch003_revisado_20260702/model.joblib
+
+YOLO: modelos percepcion/carga_tolva_yolo/
+      haul_truck_segment_m_736_low_data_aug_07012025.pt
 ```
+
+Las rutas compartidas se obtienen desde `src/granulometria/paths.py`.
