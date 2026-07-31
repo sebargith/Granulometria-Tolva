@@ -1,13 +1,14 @@
 # Percepcion YOLO de carga en tolva
 
-Modelo principal:
+Modelo entrenado de segmentacion utilizado por el pipeline:
 
 ```text
 modelos percepcion/carga_tolva_yolo/
   haul_truck_segment_m_736_low_data_aug_07012025.pt
 ```
 
-`best.pt` se conserva como alternativa historica.
+`best.pt` se conserva solo como artefacto historico y no se considera un
+segundo modelo del proyecto ni parte del flujo vigente.
 
 Inferencia de carga:
 
