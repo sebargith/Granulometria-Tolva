@@ -34,7 +34,7 @@ runs/resnet18_rgb_grid96_batch003_revisado_cuda_20260702/model.pt
 python "modelos granulometria\clasificador_patches\train_random_forest.py" `
   --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
   --run-name "rf_grid96_nuevo" `
-  --n-jobs 1
+  --jobs 1
 ```
 
 Baseline final:

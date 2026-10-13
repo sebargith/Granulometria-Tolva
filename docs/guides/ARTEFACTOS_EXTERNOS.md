@@ -1,5 +1,10 @@
 # Artefactos externos
 
+No hay una descarga publica de los pesos o datasets operacionales. Su entrega
+depende de la autorizacion de los titulares del material. Para una ejecucion
+publica sin ellos, use `python scripts/demo_portfolio.py`; presenta resultados
+historicos y un ejemplo sintetico, no inferencia del modelo.
+
 Los datos, pesos y corridas pesadas no se almacenan en Git. Para ejecutar el
 pipeline completo, deben restaurarse en las rutas indicadas debajo de la raiz
 del repositorio.
@@ -24,7 +29,8 @@ outputs/patches/grid96_batch003_data3_mixto_ai/
 ```
 
 Su archivo `labels.csv` contiene 2.455 registros revisados; 2.428 corresponden
-a las clases de entrenamiento `fino`, `medio` y `grueso`. El SHA-256 de la
+a registros elegibles de `fino`, `medio` y `grueso` con confianza alta/media
+(se excluyen 5 invalidos y 22 de baja confianza). El SHA-256 de la
 version local utilizada en los modelos finales es:
 
 ```text

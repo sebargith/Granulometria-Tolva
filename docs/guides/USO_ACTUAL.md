@@ -1,5 +1,9 @@
 # Uso actual del proyecto
 
+Para instalar desde un clon nuevo o ejecutar la demo sin pesos, consulte
+[QUICKSTART.md](QUICKSTART.md). Los comandos de entrenamiento requieren datasets
+y modelos externos. Pase siempre `--dataset` para evitar defaults historicos.
+
 Todos los comandos se ejecutan desde la raiz del repositorio:
 
 ```powershell
@@ -78,7 +82,7 @@ python "modelos granulometria\clasificador_patches\train_resnet.py" `
 python "modelos granulometria\clasificador_patches\train_random_forest.py" `
   --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
   --run-name "rf_grid96_nuevo" `
-  --n-jobs 1
+  --jobs 1
 ```
 
 ## Nuevo batch de etiquetado
@@ -100,8 +104,7 @@ python "scripts\labeling\prepare_grid_ai_packages.py" `
 
 python "scripts\labeling\compile_grid_ai_labels.py" `
   --batch-dir "data\labeling\batches\nuevo_batch" `
-  --output-dataset "outputs\patches\grid96_batch004" `
-  --overwrite
+  --output-dataset "outputs\patches\grid96_batch004"
 ```
 
 ## Prueba tecnica

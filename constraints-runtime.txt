@@ -1,0 +1,18 @@
+# Direct versions observed in the local Python 3.10.20 Windows runtime.
+# This is a reference constraints snapshot, not a transitive lockfile.
+# Local torch/torchvision builds use +cu128; choose the appropriate wheel index.
+ultralytics==8.4.43
+opencv-python==4.13.0.92
+numpy==2.2.6
+pandas==2.3.3
+torch==2.11.0
+torchvision==0.26.0
+scikit-learn==1.7.2
+streamlit==1.58.0
+kornia==0.8.2
+matplotlib==3.10.9
+Pillow==12.2.0
+joblib==1.5.3
+tqdm==4.67.3
+pyyaml==6.0.3
+dill==0.4.1
