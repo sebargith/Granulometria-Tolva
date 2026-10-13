@@ -19,6 +19,13 @@ Thumbs.db
 
 # Documentacion interna no publicable
 /docs/meetings/
+/docs/informe_final/
+/docs/presentations/
+/docs/methodology/*.docx
+/docs/results/*.docx
+/docs/guides/*.docx
+/docs/labeling/*.jpg
+/docs/diagrams/Flujo_Granulometria.excalidraw.png
 
 # Datos locales y artefactos pesados
 data/*
