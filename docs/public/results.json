@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "kind": "recorded_experimental_results",
+  "provenance": "Aggregate transcription from July 2026 reviewed Batch003 run metrics and technical-test report; no new evaluation.",
+  "classes": ["fino", "medio", "grueso"],
+  "dataset": {"annotations": 2455, "invalid": 5, "low_confidence_excluded": 22, "usable_patches": 2428, "frames": 90, "class_counts": [704, 903, 821], "split_frames": [63, 13, 14], "split_patches": [1706, 365, 357]},
+  "experiments": [
+    {"id": "rf_batch003_reviewed", "name": "Random Forest", "unit": "patch", "val_f1_macro": 0.6695481913247517, "test_f1_macro": 0.69729396711152, "accuracy": 0.6918767507002801, "matrix": [[80, 21, 5], [28, 88, 15], [3, 38, 79]], "selection": "validation F1, then refit on train+validation"},
+    {"id": "resnet18_batch003_reviewed", "name": "ResNet18 RGB", "unit": "patch", "val_f1_macro": 0.7301783100989084, "test_f1_macro": 0.7571131856800809, "accuracy": 0.7535014005602241, "matrix": [[93, 12, 1], [37, 84, 10], [1, 27, 92]], "selection": "best validation F1 checkpoint, epoch 15"},
+    {"id": "technical_90_frames", "name": "Full pipeline", "unit": "frame", "test_f1_macro": 0.7626728110599078, "accuracy": 0.7666666666666667, "evaluable": 90, "total": 90, "matrix": [[26, 4, 0], [5, 18, 7], [1, 4, 25]], "selection": "visual dominant-class reference, 30 frames per class"}
+  ]
+}

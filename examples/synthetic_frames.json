@@ -1,0 +1,10 @@
+{
+  "kind": "synthetic_patch_labels_not_model_predictions",
+  "description": "Invented cell labels for demonstrating aggregation only. No operational frames or model inference.",
+  "frames": [
+    {"id": "synthetic_01", "labels": ["fino", "fino", "medio", "medio", "grueso", "medio", "fino", "medio", "grueso", "medio", "grueso", "medio"]},
+    {"id": "synthetic_02", "labels": ["fino", "fino", "fino", "medio", "medio", "grueso", "fino", "medio", "grueso", "grueso", "medio", "grueso"]},
+    {"id": "synthetic_03", "labels": ["medio", "grueso", "grueso", "grueso", "medio", "fino"]},
+    {"id": "synthetic_empty", "labels": []}
+  ]
+}

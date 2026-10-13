@@ -1,229 +1,108 @@
-# Granulometria visual en tolva
+# Visual Granulometry in Haul Trucks
 
-Pipeline experimental para estimar la granulometria visual aparente del material
-visible en la tolva de camiones CAEX. La entrada operacional es un video o una
-carpeta de frames; la salida incluye proporciones de material fino, medio y
-grueso, clase dominante, indice granulometrico, dispersion y trazabilidad visual.
+[Español](README.es.md) · [Evaluation](docs/EVALUATION.md) · [Quickstart](docs/guides/QUICKSTART.md) · [Model card](docs/MODEL_CARD.md)
 
-El resultado describe la superficie visible de la carga. No corresponde a una
-medicion fisica en milimetros ni a la distribucion granulometrica de todo el
-volumen transportado.
+![Tests](https://github.com/sebargith/Granulometria-Tolva/actions/workflows/tests.yml/badge.svg)
 
-## Pipeline actual
+An experimental computer vision pipeline estimating **fine, medium and coarse
+visual composition of material visible in mining haul trucks**. YOLO segmentation,
+normalized RGB patches, ResNet18 and frame/video aggregation are integrated in a
+local Streamlit application.
 
-```text
-video o imagenes
--> extraccion de frames
--> YOLO-seg: mascara de carga
--> normalizacion de la carga a 896 px de ancho
--> grilla de patches RGB de 96 x 96 px
--> ResNet18: fino / medio / grueso
--> agregacion por frame y por video
--> porcentajes, dominante, indice, dispersion, confianza y overlays
+The output describes the visible surface, **not sizes in millimetres or the
+particle-size distribution of the entire load**.
+
+## Results
+
+| Experiment | Evaluation unit | Macro F1 | Accuracy |
+|---|---|---:|---:|
+| OpenCV + Random Forest | 357 held-out patches | 0.697 | 69.2% |
+| RGB + ResNet18 | Same 357 held-out patches | **0.757** | **75.4%** |
+| Full pipeline technical test | 90 complete frames | 0.763 | 76.7% |
+
+**2,455 annotations**, of which **2,428 patches from 90 frames** pass filtering.
+Classifier splits are grouped by source frame. The technical test is a separate
+90-frame evaluation against visual dominant-class labels; independence by video
+or truck has not been established.
+
+![Technical test confusion matrix](docs/public/technical_confusion.png)
+
+These are experimental results, not a production or cross-site benchmark.
+[Protocol and error analysis](docs/EVALUATION.md) explain the RF train+validation
+refit versus CNN validation-checkpoint selection.
+
+## Pipeline
+
+```mermaid
+flowchart LR
+    A["Video / frames"] --> B["YOLO material mask"]
+    B --> C["Normalize width: 896 px"]
+    C --> D["RGB patches: 96 x 96"]
+    D --> E["ResNet18: fine / medium / coarse"]
+    E --> F["Frame and video aggregation"]
+    F --> G["Overlays, CSV, visual index and dispersion"]
 ```
 
-Modelo principal:
+## Engineering contributions
 
-```text
-modelos granulometria/clasificador_patches/runs/
-  resnet18_rgb_grid96_batch003_revisado_cuda_20260702/model.pt
+- Load normalization and mask-aware patch extraction with source/position traceability.
+- Contextual grid labeling, AI-assisted annotations and human review in Streamlit.
+- RF baseline, transfer learning and explicit grouped evaluation for ResNet18.
+- Composition indicators, video aggregation, reviewable overlays and exports.
+- Integration with shared perception: the YOLO checkpoint was **provided by PSINET**
+  and also serves [Cono de Carga](https://github.com/sebargith/Cono-de-Carga).
+  Training that checkpoint is not claimed as a contribution here.
+
+Developed in a thesis collaboration with PSINET and Universidad de Concepción,
+using operational data from Collahuasi. Current status: local research prototype.
+
+## Try it without private data
+
+From a clone, with Python 3.10 or 3.11:
+
+```sh
+python scripts/demo_portfolio.py --output outputs/portfolio_demo.html
 ```
 
-Baseline conservado:
+Open the HTML file in a browser. It includes recorded evaluation results and
+**explicitly synthetic** patch maps and temporal aggregation. No packages, GPU,
+weights, mine imagery or server are required. It does not execute YOLO or ResNet
+inference. [Demo scope](examples/README.md).
 
-```text
-modelos granulometria/clasificador_patches/runs/
-  rf_grid96_batch003_revisado_20260702/model.joblib
-```
+![Synthetic patch map, not a model prediction](docs/public/synthetic_patches.png)
 
-Modelo de percepcion:
+Full inference requires private artifacts. See [installation](docs/guides/QUICKSTART.md)
+and the [artifact manifest](docs/guides/ARTEFACTOS_EXTERNOS.md). No public weights
+or dataset download is currently available.
 
-```text
-modelos percepcion/carga_tolva_yolo/
-  haul_truck_segment_m_736_low_data_aug_07012025.pt
-```
+## Code tour
 
-## Estructura
+| Component | Entry point |
+|---|---|
+| Segmentation, normalization, inference | [Image pipeline](modelos%20granulometria/inferencia_tolva/predict_granulometria_tolva.py) |
+| Transfer learning | [ResNet trainer](modelos%20granulometria/clasificador_patches/train_resnet.py) |
+| Handcrafted-feature baseline | [RF trainer](modelos%20granulometria/clasificador_patches/train_random_forest.py) |
+| Label validation | [Dataset compiler](scripts/labeling/compile_grid_ai_labels.py) |
+| Visual index and dispersion | [Metrics](src/granulometria/metrics.py) |
+| Review and video UI | [Streamlit app](tools/patch_labeler/app.py) |
 
-```text
-Granulometria/
-|-- data/
-|   |-- raw/evidencias_caex/              # evidencia original
-|   |-- datasets/patch_frames/             # frames de Batch 001, 002 y 003
-|   |-- evaluation/prueba_tecnica/         # 90 frames de evaluacion
-|   |-- labeling/                          # batches, referencias y respuestas IA
-|   `-- legacy/                            # datos historicos no usados por el pipeline actual
-|-- docs/
-|   |-- informe_final/                     # Word, figuras y referencias del informe
-|   |-- guides/                            # comandos actuales
-|   |-- labeling/                          # prompt e indice de batches
-|   |-- methodology/                       # documentos metodologicos historicos
-|   |-- presentations/
-|   `-- results/
-|-- input/                                 # entradas manuales de prueba
-|-- modelos granulometria/                 # entrenamiento e inferencia granulometrica
-|-- modelos percepcion/                    # herramientas y pesos YOLO de carga
-|-- outputs/                               # datasets procesados y corridas vigentes
-|-- scripts/
-|   |-- labeling/
-|   |-- reporting/
-|   |-- evaluate_granulometry_technical_test.py
-|   `-- run_dexined_edges.py
-|-- src/granulometria/                     # metricas, rutas compartidas y DexiNed
-|-- tests/
-|-- tools/patch_labeler/                   # aplicacion Streamlit
-|-- tools/patch_labeler/crear_acceso_directo.ps1 # genera el acceso local
-`-- requirements.txt
-```
+## Limitations and next experiment
 
-## Entorno
+Perspective, occlusion, dust, lighting and annotation ambiguity affect predictions.
+Width normalization reduces scale variation without physical calibration. Softmax
+confidence is uncalibrated. Repeated frames can overweight one moment in video
+aggregation. Medium is the hardest class (60% technical-test recall).
 
-Desde la raiz del repositorio:
+The next evaluation should hold out entire trucks/videos or capture sessions,
+freeze models and thresholds before testing, and report performance, coverage,
+abstention and latency by condition. [Evaluation roadmap](docs/EVALUATION.md#next-evaluation).
 
-```powershell
-conda activate memoria-dexined
-pip install -r requirements.txt
-```
+## Development and publication
 
-Para CNN con GPU se requiere una instalacion de PyTorch compatible con CUDA.
-
-## Abrir la aplicacion
-
-El acceso directo no se versiona porque contiene una ruta local. Para crearlo:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File "tools\patch_labeler\crear_acceso_directo.ps1"
-```
-
-Luego se puede abrir `Abrir Webapp Granulometria de Carga.lnk`. Para iniciar
-directamente desde PowerShell:
-
-```powershell
-& "tools\patch_labeler\abrir_etiquetador.cmd" `
-  "outputs\patches\grid96_batch003_data3_mixto_ai"
-```
-
-La aplicacion permite:
-
-- revisar y corregir etiquetas de patches;
-- filtrar por clase y confianza;
-- ejecutar el pipeline completo sobre video;
-- revisar overlays y resultados por frame;
-- consultar el resultado agregado del video;
-- descargar CSV y artefactos de la corrida.
-
-Las correcciones se guardan en:
-
-```text
-outputs/patches/grid96_batch003_data3_mixto_ai/labels.csv
-```
-
-## Inferencia sobre imagenes
-
-El predictor usa por defecto el modelo ResNet18 final, patches de 96 px,
-stride 96 y normalizacion a 896 px:
-
-```powershell
-python "modelos granulometria\inferencia_tolva\predict_granulometria_tolva.py" `
-  --source "input\prueba_cnn_50_frames" `
-  --run-name "cnn_prueba_actual" `
-  --device 0 `
-  --patch-device cuda
-```
-
-La salida queda en:
-
-```text
-outputs/granulometria_tolva/<run-name>/
-```
-
-## Entrenamiento
-
-ResNet18 RGB:
-
-```powershell
-python "modelos granulometria\clasificador_patches\train_resnet.py" `
-  --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
-  --run-name "resnet18_rgb_grid96_nuevo" `
-  --image-size 96 `
-  --batch-size 64 `
-  --freeze-epochs 8 `
-  --finetune-epochs 8 `
-  --device cuda
-```
-
-Random Forest:
-
-```powershell
-python "modelos granulometria\clasificador_patches\train_random_forest.py" `
-  --dataset "outputs\patches\grid96_batch003_data3_mixto_ai" `
-  --run-name "rf_grid96_nuevo" `
-  --n-jobs 1
-```
-
-El split se realiza por frame, no por patch, para evitar fuga de informacion.
-Las etiquetas `invalido` y `ambiguo` se excluyen del entrenamiento.
-
-## Preparar un nuevo batch para etiquetado
-
-1. Generar grillas normalizadas:
-
-```powershell
-python "modelos granulometria\inferencia_tolva\generar_grillas_normalizadas.py" `
-  --source "data\datasets\patch_frames\batch003" `
-  --output-dir "data\labeling\batches\nuevo_batch\grillas" `
-  --run-name "grillas" `
-  --widths 896 `
-  --cell-size 96 `
-  --recursive
-```
-
-2. Preparar paquetes:
-
-```powershell
-python "scripts\labeling\prepare_grid_ai_packages.py" `
-  --grid-run "data\labeling\batches\nuevo_batch\grillas\grillas" `
-  --batch-dir "data\labeling\batches\nuevo_batch" `
-  --package-prefix "batch004" `
-  --mix-by-source-parent
-```
-
-3. Compilar las respuestas:
-
-```powershell
-python "scripts\labeling\compile_grid_ai_labels.py" `
-  --batch-dir "data\labeling\batches\nuevo_batch" `
-  --output-dataset "outputs\patches\grid96_batch004" `
-  --overwrite
-```
-
-## Prueba tecnica
-
-```powershell
-python "modelos granulometria\inferencia_tolva\predict_granulometria_tolva.py" `
-  --source "data\evaluation\prueba_tecnica" `
-  --recursive `
-  --run-name "prueba_tecnica_actual" `
-  --output-dir "outputs\prueba_tecnica"
-
-python "scripts\evaluate_granulometry_technical_test.py" `
-  --run-dir "outputs\prueba_tecnica\prueba_tecnica_actual" `
-  --overwrite
-```
-
-## Verificacion
-
-```powershell
+```sh
 python -m unittest discover -s tests -v
-python -m compileall src tools scripts "modelos granulometria" "modelos percepcion"
 ```
 
-El informe vigente se encuentra en:
-
-```text
-docs/informe_final/Capitulo_Granulometria_Informe_Final.docx
-```
-
-Los detalles operativos adicionales estan en `docs/guides/USO_ACTUAL.md`.
-Los modelos y datasets externos necesarios se describen en
-`docs/guides/ARTEFACTOS_EXTERNOS.md`.
+[Integration checks](docs/guides/QUICKSTART.md#tests) exercise actual dataset and
+inference helpers with synthetic inputs. Internal deliverables and operational
+imagery remain local. See [publication boundaries and historical exposure](docs/PUBLICATION.md).
