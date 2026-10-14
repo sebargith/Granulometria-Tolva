@@ -38,7 +38,9 @@ threshold and validated abstention policy have not been established.
 
 ## Provenance
 
-YOLO segmentation was supplied by PSINET and is shared with Cono de Carga. This
-project develops the granulometry stage and integration. Data comes from
+The author trained the YOLO segmentation model as part of the thesis project
+in collaboration with PSINet. The same trained model is shared with Cono de Carga,
+with separate inference configurations and analytic branches. This repository
+also develops the granulometry stage and integration. Data comes from
 Collahuasi in a thesis collaboration with PSINET and Universidad de Concepción.
 [Artifact hashes](guides/ARTEFACTOS_EXTERNOS.md) · [Publication boundary](PUBLICATION.md).

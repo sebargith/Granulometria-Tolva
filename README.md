@@ -1,8 +1,8 @@
 # Visual Granulometry in Haul Trucks
 
-[Español](README.es.md) · [Evaluation](docs/EVALUATION.md) · [Quickstart](docs/guides/QUICKSTART.md) · [Model card](docs/MODEL_CARD.md)
+[Español](README.es.md) · [Demo](#try-the-demo) · [Evaluation](docs/EVALUATION.md) · [Documentation](docs/guides/QUICKSTART.md)
 
-![Tests](https://github.com/sebargith/Granulometria-Tolva/actions/workflows/tests.yml/badge.svg)
+[![Tests](https://github.com/sebargith/Granulometria-Tolva/actions/workflows/tests.yml/badge.svg)](https://github.com/sebargith/Granulometria-Tolva/actions/workflows/tests.yml)
 
 An experimental computer vision pipeline estimating **fine, medium and coarse
 visual composition of material visible in mining haul trucks**. YOLO segmentation,
@@ -11,6 +11,19 @@ local Streamlit application.
 
 The output describes the visible surface, **not sizes in millimetres or the
 particle-size distribution of the entire load**.
+
+## Visual example
+
+```mermaid
+flowchart LR
+    A["Visible load"] --> B["Local patches"]
+    B["Local patches"] --> C["Fine / medium / coarse"]
+    C["Fine / medium / coarse"] --> D["Surface composition"]
+```
+
+![Synthetic patch map, not a model prediction](docs/public/synthetic_patches.png)
+
+*Conceptual view and synthetic labels, not model predictions. Local patch classes are combined to describe the visible load surface.*
 
 ## Results
 
@@ -31,7 +44,18 @@ These are experimental results, not a production or cross-site benchmark.
 [Protocol and error analysis](docs/EVALUATION.md) explain the RF train+validation
 refit versus CNN validation-checkpoint selection.
 
-## Pipeline
+## My contribution
+
+I developed this project from data preparation through implementation and evaluation, including training the segmentation model used by both project branches. My work on granulometry included:
+
+- Load normalization and mask-aware patch extraction with source/position traceability.
+- Contextual grid labeling, AI-assisted annotations and human review in Streamlit.
+- A Random Forest baseline, ResNet18 transfer learning and grouped evaluation.
+- Composition indicators, video aggregation, reviewable overlays and exports.
+
+The same trained segmentation model supports Cono de Carga. Each branch runs its own inference configuration and analytic; sharing a model does not require sharing the same mask file or executing both branches together.
+
+## How it works
 
 ```mermaid
 flowchart LR
@@ -43,20 +67,11 @@ flowchart LR
     F --> G["Overlays, CSV, visual index and dispersion"]
 ```
 
-## Engineering contributions
+The classifier predicts fine, medium or coarse for each valid patch. Patch counts give surface proportions; the dominant class, visual index and dispersion summarize each frame and video. These are relative appearance categories, not physical particle diameters.
 
-- Load normalization and mask-aware patch extraction with source/position traceability.
-- Contextual grid labeling, AI-assisted annotations and human review in Streamlit.
-- RF baseline, transfer learning and explicit grouped evaluation for ResNet18.
-- Composition indicators, video aggregation, reviewable overlays and exports.
-- Integration with shared perception: the YOLO checkpoint was **provided by PSINET**
-  and also serves [Cono de Carga](https://github.com/sebargith/Cono-de-Carga).
-  Training that checkpoint is not claimed as a contribution here.
+Stack: Python, OpenCV, PyTorch, ResNet18, scikit-learn, YOLO segmentation and Streamlit.
 
-Developed in a thesis collaboration with PSINET and Universidad de Concepción,
-using operational data from Collahuasi. Current status: local research prototype.
-
-## Try it without private data
+## Try the demo
 
 From a clone, with Python 3.10 or 3.11:
 
@@ -69,13 +84,13 @@ Open the HTML file in a browser. It includes recorded evaluation results and
 weights, mine imagery or server are required. It does not execute YOLO or ResNet
 inference. [Demo scope](examples/README.md).
 
-![Synthetic patch map, not a model prediction](docs/public/synthetic_patches.png)
+
 
 Full inference requires private artifacts. See [installation](docs/guides/QUICKSTART.md)
 and the [artifact manifest](docs/guides/ARTEFACTOS_EXTERNOS.md). No public weights
 or dataset download is currently available.
 
-## Code tour
+## Code and documentation
 
 | Component | Entry point |
 |---|---|
@@ -86,7 +101,13 @@ or dataset download is currently available.
 | Visual index and dispersion | [Metrics](src/granulometria/metrics.py) |
 | Review and video UI | [Streamlit app](tools/patch_labeler/app.py) |
 
-## Limitations and next experiment
+[Model card](docs/MODEL_CARD.md) · [Automated tests](docs/guides/QUICKSTART.md#tests)
+
+```sh
+python -m unittest discover -s tests -v
+```
+
+## Limitations and next step
 
 Perspective, occlusion, dust, lighting and annotation ambiguity affect predictions.
 Width normalization reduces scale variation without physical calibration. Softmax
@@ -97,12 +118,8 @@ The next evaluation should hold out entire trucks/videos or capture sessions,
 freeze models and thresholds before testing, and report performance, coverage,
 abstention and latency by condition. [Evaluation roadmap](docs/EVALUATION.md#next-evaluation).
 
-## Development and publication
+## Project context and publication
 
-```sh
-python -m unittest discover -s tests -v
-```
+Developed as an undergraduate thesis with PSINet and Universidad de Concepción, using operational data from Collahuasi. Current status: local research prototype. [Cono de Carga](https://github.com/sebargith/Cono-de-Carga) is the companion project: it describes visible shape, while this analytic describes surface composition. Their performance figures measure different tasks and should not be ranked against each other.
 
-[Integration checks](docs/guides/QUICKSTART.md#tests) exercise actual dataset and
-inference helpers with synthetic inputs. Internal deliverables and operational
-imagery remain local. See [publication boundaries and historical exposure](docs/PUBLICATION.md).
+Internal deliverables, weights and operational imagery remain local in the current version. The public demo uses aggregate results and synthetic data; it does not make the original dataset publicly reproducible. [Publication boundary and historical exposure](docs/PUBLICATION.md).
